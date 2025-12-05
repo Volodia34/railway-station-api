@@ -1,26 +1,34 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { CreateTrainDto } from './dto/create-train.dto';
 import { UpdateTrainDto } from './dto/update-train.dto';
+import { Train, TrainDocument } from './schemas/train.schema';
 
 @Injectable()
 export class TrainsService {
-  create(createTrainDto: CreateTrainDto) {
-    return 'This action adds a new train';
+  constructor(
+    @InjectModel(Train.name) private trainModel: Model<TrainDocument>,
+  ) {}
+
+  async create(createTrainDto: CreateTrainDto): Promise<Train> {
+    const createdTrain = new this.trainModel(createTrainDto);
+    return createdTrain.save();
   }
 
-  findAll() {
-    return `This action returns all trains`;
+  async findAll(): Promise<Train[]> {
+    return this.trainModel.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} train`;
+  async findOne(id: string): Promise<Train | null> {
+    return this.trainModel.findById(id).exec();
   }
 
-  update(id: number, updateTrainDto: UpdateTrainDto) {
-    return `This action updates a #${id} train`;
+  async update(id: string, updateTrainDto: UpdateTrainDto): Promise<Train | null> {
+    return this.trainModel.findByIdAndUpdate(id, updateTrainDto, { new: true }).exec();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} train`;
+  async remove(id: string): Promise<Train | null> {
+    return this.trainModel.findByIdAndDelete(id).exec();
   }
 }
