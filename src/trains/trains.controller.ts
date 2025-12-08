@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { TrainsService } from './trains.service';
 import { CreateTrainDto } from './dto/create-train.dto';
@@ -21,8 +22,12 @@ export class TrainsController {
   }
 
   @Get()
-  findAll() {
-    return this.trainsService.findAll();
+  findAll(
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+    @Query('date') date?: string,
+  ) {
+    return this.trainsService.findAll(from, to, date);
   }
 
   @Get(':id')
