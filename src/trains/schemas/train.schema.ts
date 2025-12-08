@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Carriage, CarriageSchema } from './carriage.schema';
 
 export type TrainDocument = Train & Document;
 
@@ -20,11 +21,8 @@ export class Train {
   @Prop({ required: true })
   price: number;
 
-  @Prop({ default: 0 })
-  seatsTotal: number;
-
-  @Prop({ default: 0 })
-  seatsAvailable: number;
+  @Prop({ type: [CarriageSchema], default: [] })
+  carriages: Carriage[];
 }
 
 export const TrainSchema = SchemaFactory.createForClass(Train);

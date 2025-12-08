@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common'; // Додай BadRequestException
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateTicketDto } from './dto/create-ticket.dto';
@@ -11,9 +11,23 @@ export class TicketsService {
   ) {}
 
   async create(createTicketDto: CreateTicketDto): Promise<Ticket> {
+    const existingTicket = await this.ticketModel
+      .findOne({
+        train: createTicketDto.trainId,
+        carriageNumber: createTicketDto.carriageNumber,
+        seatNumber: createTicketDto.seatNumber,
+      })
+      .exec();
+
+    if (existingTicket) {
+      throw new BadRequestException('Seat is already booked');
+    }
+
     const newTicket = new this.ticketModel({
       passengerName: createTicketDto.passengerName,
       train: createTicketDto.trainId,
+      carriageNumber: createTicketDto.carriageNumber,
+      seatNumber: createTicketDto.seatNumber,
     });
     return newTicket.save();
   }
@@ -23,6 +37,10 @@ export class TicketsService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} ticket`;
+    return `Action #${id}`;
+  }
+
+  async findByTrainId(trainId: string): Promise<Ticket[]> {
+    return this.ticketModel.find({ train: trainId }).exec();
   }
 }
