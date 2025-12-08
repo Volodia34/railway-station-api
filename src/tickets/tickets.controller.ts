@@ -1,13 +1,6 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { TicketsService } from './tickets.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
-
 @Controller('tickets')
 export class TicketsController {
   constructor(private readonly ticketsService: TicketsService) {}
@@ -15,6 +8,15 @@ export class TicketsController {
   @Post()
   create(@Body() createTicketDto: CreateTicketDto) {
     return this.ticketsService.create(createTicketDto);
+  }
+
+  @Get('booked/:trainId')
+  async getBookedSeats(@Param('trainId') trainId: string) {
+    const tickets = await this.ticketsService.findByTrainId(trainId);
+    return tickets.map((t) => ({
+      carriage: t.carriageNumber,
+      seat: t.seatNumber,
+    }));
   }
 
   @Get()

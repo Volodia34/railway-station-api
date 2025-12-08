@@ -12,6 +12,12 @@ export class Ticket {
   @Prop({ type: Types.ObjectId, ref: 'Train', required: true })
   train: Train;
 
+  @Prop({ required: true })
+  carriageNumber: number;
+
+  @Prop({ required: true })
+  seatNumber: number;
+
   @Prop({ default: Date.now })
   purchaseDate: Date;
 }
