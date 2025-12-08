@@ -24,8 +24,13 @@ export class TrainsService {
     return this.trainModel.findById(id).exec();
   }
 
-  async update(id: string, updateTrainDto: UpdateTrainDto): Promise<Train | null> {
-    return this.trainModel.findByIdAndUpdate(id, updateTrainDto, { new: true }).exec();
+  async update(
+    id: string,
+    updateTrainDto: UpdateTrainDto,
+  ): Promise<Train | null> {
+    return this.trainModel
+      .findByIdAndUpdate(id, updateTrainDto, { new: true })
+      .exec();
   }
 
   async remove(id: string): Promise<Train | null> {
